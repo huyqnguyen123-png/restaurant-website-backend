@@ -8,8 +8,8 @@ import com.restaurantwebsite.backend.exception.ResourceNotFoundException;
 import com.restaurantwebsite.backend.repository.MenuItemRepository;
 import com.restaurantwebsite.backend.repository.PickupOrderRepository;
 import com.restaurantwebsite.backend.util.BusinessHours;
-
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,12 +19,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class PickupOrderService {
 
     private final PickupOrderRepository pickupOrderRepository;
     private final MenuItemRepository menuItemRepository;
+    private final PosBackendClient posBackendClient;
 
- public PickupOrderResponse create(CreatePickupOrderRequest request) {
+    public PickupOrderResponse create(CreatePickupOrderRequest request) {
         if (BusinessHours.isPickupTimeTooSoon(request.getPickupTime())) {
             throw new IllegalArgumentException("Pickup time must be at least 20 minutes from now.");
         }
@@ -59,7 +61,30 @@ public class PickupOrderService {
         order.setTotalAmount(total);
 
         PickupOrder saved = pickupOrderRepository.save(order);
+
+        // Push to the POS app so staff see it immediately, using each item's
+        // exact website name/price as a custom line item — never blocks or
+        // fails the customer's order if the POS backend is unreachable.
+        pushToPos(saved);
+
         return toResponse(saved);
+    }
+
+    private void pushToPos(PickupOrder order) {
+        try {
+            Long posOrderId = posBackendClient.createOrder(
+                    new PosCreateOrderRequest("TAKEAWAY", order.getCustomerName()));
+
+            for (PickupOrderItem item : order.getItems()) {
+                posBackendClient.addOrderItem(posOrderId, new PosAddOrderItemRequest(
+                        item.getItemNameSnapshot(),
+                        item.getUnitPriceSnapshot(),
+                        item.getQuantity()
+                ));
+            }
+        } catch (Exception e) {
+            log.warn("Failed to push pickup order {} to POS backend: {}", order.getId(), e.getMessage());
+        }
     }
 
     public List<PickupOrderResponse> getAll() {
