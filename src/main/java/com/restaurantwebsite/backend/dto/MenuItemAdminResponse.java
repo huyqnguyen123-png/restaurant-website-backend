@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,10 +18,11 @@ public class MenuItemAdminResponse {
     private String descriptionDe;
     private String category;
     private String imageUrl;
+    private BigDecimal price;
     private boolean active;
 
-    // True if posMenuItemId currently matches a real item in pos-backend —
-    // lets the admin screen flag broken links (e.g. after staff deletes the
-    // linked item on the POS side).
-    private boolean linkValid;
+    // True if this item has an optional POS link set — no longer verified
+    // live against the POS backend, just reflects whether posMenuItemId
+    // was ever assigned.
+    private boolean linked;
 }

@@ -4,16 +4,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-// The website's own, richer menu content (full names, descriptions, images,
-// categories for filtering) — separate from the POS app's short internal
-// names. posMenuItemId links each row to the corresponding MenuItem.id in
-// the pos-backend database. This is NOT a real foreign key (the two
-// databases are entirely separate) — it's just a plain reference number
-// used when building an order to send to the POS backend, and price is
-// always fetched live from the POS backend rather than duplicated here,
-// so there's only one source of truth for pricing.
+// The website's own, fully independent menu content — name, description,
+// price and category are all stored here directly, with no dependency on
+// the POS backend. posMenuItemId is kept as an OPTIONAL reference in case
+// staff later want to manually link a website item to a specific POS item
+// for reporting purposes, but nothing in ordering or display requires it.
 @Entity
 @Table(name = "menu_items")
 @Data
@@ -24,13 +22,12 @@ public class MenuItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    // Optional — no longer required for the item to function.
     private Long posMenuItemId;
 
     @Column(nullable = false)
     private String nameEn;
 
-    // Nullable: falls back to nameEn on the frontend if not filled in.
     private String nameDe;
 
     @Column(length = 1000)
@@ -39,11 +36,12 @@ public class MenuItem {
     @Column(length = 1000)
     private String descriptionDe;
 
-    // Free-text category (e.g. "Nigiri", "Sashimi", "Maki") rather than a
-    // fixed enum, so new categories can be added later without a code change.
     private String category;
 
     private String imageUrl;
+
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal price;
 
     @Column(nullable = false)
     private boolean active = true;

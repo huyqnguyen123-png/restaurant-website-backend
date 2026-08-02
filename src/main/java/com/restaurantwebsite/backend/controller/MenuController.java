@@ -16,13 +16,15 @@ public class MenuController {
 
     private final MenuService menuService;
 
-    // GET /api/menu -> public menu for the website, prices always live from POS
     @GetMapping("/api/menu")
     public ResponseEntity<List<MenuItemResponse>> getPublicMenu() {
         return ResponseEntity.ok(menuService.getPublicMenu());
     }
 
-    // --- Admin endpoints (not yet password-protected — added in a later phase) ---
+    @GetMapping("/api/menu/{id}")
+    public ResponseEntity<MenuItemResponse> getPublicMenuItemById(@PathVariable Long id) {
+        return ResponseEntity.ok(menuService.getPublicMenuItemById(id));
+    }
 
     @GetMapping("/api/admin/menu")
     public ResponseEntity<List<MenuItemAdminResponse>> getAllForAdmin() {

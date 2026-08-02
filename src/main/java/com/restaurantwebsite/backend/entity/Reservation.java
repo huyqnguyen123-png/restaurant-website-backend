@@ -22,9 +22,6 @@ public class Reservation {
     private String customerName;
 
     @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
     private String phone;
 
     @Column(nullable = false)
@@ -38,14 +35,6 @@ public class Reservation {
 
     @Column(length = 1000)
     private String notes;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private SyncStatus syncStatus = SyncStatus.PENDING;
-
-    // The id this reservation was assigned once created in the POS backend
-    // (null until successfully synced).
-    private Long posReservationId;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;

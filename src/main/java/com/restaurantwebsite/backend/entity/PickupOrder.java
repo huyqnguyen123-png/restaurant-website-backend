@@ -24,26 +24,14 @@ public class PickupOrder {
     @Column(nullable = false)
     private String customerName;
 
-    // Optional — useful for the restaurant to call the customer if needed,
-    // but not part of the minimum required fields.
+    @Column(nullable = false)
     private String phone;
 
     @Column(nullable = false)
     private LocalDateTime pickupTime;
 
-    // Snapshot of the order total at submission time (sum of each item's
-    // unitPriceSnapshot * quantity) — not recalculated later even if POS
-    // prices change afterward.
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal totalAmount;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private SyncStatus syncStatus = SyncStatus.PENDING;
-
-    // The order id this was assigned once created in the POS backend
-    // (null until successfully synced).
-    private Long posOrderId;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;
