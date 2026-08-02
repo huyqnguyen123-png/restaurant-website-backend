@@ -1,5 +1,6 @@
 package com.restaurantwebsite.backend.dto;
 
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -13,6 +14,7 @@ public class CreateReservationRequest {
     private String customerName;
 
     @NotBlank(message = "phone must not be empty")
+    @Pattern(regexp = "^[+\\d\\s().-]{8,}$", message = "phone must be a valid phone number")
     private String phone;
 
     @NotNull(message = "reservationDate must not be null")

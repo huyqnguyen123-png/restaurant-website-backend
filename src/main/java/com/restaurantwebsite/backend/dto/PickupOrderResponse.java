@@ -18,5 +18,6 @@ public class PickupOrderResponse {
     private LocalDateTime pickupTime;
     private BigDecimal totalAmount;
     private List<PickupOrderItemResponse> items;
+    private String notes;
     private LocalDateTime createdAt;
 }

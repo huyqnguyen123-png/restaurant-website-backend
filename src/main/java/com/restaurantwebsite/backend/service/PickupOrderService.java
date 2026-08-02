@@ -39,6 +39,7 @@ public class PickupOrderService {
         order.setCustomerName(request.getCustomerName());
         order.setPhone(request.getPhone());
         order.setPickupTime(request.getPickupTime());
+        order.setNotes(request.getNotes());
 
         BigDecimal total = BigDecimal.ZERO;
 
@@ -111,6 +112,7 @@ public class PickupOrderService {
                 order.getPickupTime(),
                 order.getTotalAmount(),
                 items,
+                order.getNotes(),
                 order.getCreatedAt()
         );
     }

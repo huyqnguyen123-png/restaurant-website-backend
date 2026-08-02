@@ -27,6 +27,9 @@ public class PickupOrder {
     @Column(nullable = false)
     private String phone;
 
+    @Column(length = 1000)
+    private String notes;
+
     @Column(nullable = false)
     private LocalDateTime pickupTime;
 

@@ -1,5 +1,6 @@
 package com.restaurantwebsite.backend.dto;
 
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -16,7 +17,10 @@ public class CreatePickupOrderRequest {
     private String customerName;
 
     @NotBlank(message = "phone must not be empty")
+    @Pattern(regexp = "^[+\\d\\s().-]{8,}$", message = "phone must be a valid phone number")
     private String phone;
+
+    private String notes;
 
     @NotNull(message = "pickupTime must not be null")
     private LocalDateTime pickupTime;
