@@ -20,7 +20,11 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOriginPatterns("http://localhost:*")
+                        .allowedOriginPatterns(
+                                "http://localhost:*",
+                                "https://restaurant-website-frontend-f8ixij0p3.vercel.app",
+                                "https://*.vercel.app"
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*");
             }
